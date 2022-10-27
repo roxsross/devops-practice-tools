@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+/* CSS document for Mom and Pop web site*/
+
+.center {
+  text-align: center;
+ }
+
+.bodyStyle {
+	width: 960px;
+	margin: 0 auto;
+	overflow: auto;
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'sans-serif';
+	font-size: 15px;
+}
+
+.mainHeader {
+  	font-family: "Comic Sans MS", cursive;
+	font-size: 60px;
+	line-height: 66px;
+	color: #000;
+	text-align: center;
+}
+.cursiveText {
+	font-family: "Comic Sans MS", cursive;
+	font-size: 18px;
+	line-height: 24px;
+	color: #000;
+	text-align: center;
+}
