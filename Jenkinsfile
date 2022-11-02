@@ -22,7 +22,7 @@ pipeline {
         } 
         stage('Upload to S3') {
             steps {
-                sh 'aws s3 cp static-website s3://demo-s3-web --recursive'
+                sh 'aws s3 cp static-website s3://leandroooo --recursive'
             }
         }         
     }
