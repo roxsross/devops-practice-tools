@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('AWS VALIDATE') {
+        stage('AWS VALIDATE!') {
             steps {
                 echo 'AWS STS'
                 sh 'aws sts get-caller-identity'
