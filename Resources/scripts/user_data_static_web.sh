@@ -9,5 +9,4 @@ cd /var/www/html
 echo "Hello!" > index.html
 
 git clone https://github.com/roxsross/devops-practice-tools.git
-unzip static-website/coming-soon-static-web/coming-soon-static-web.zip
-cp -r coming-soon-static-web/* /var/www/html/
+cp -r devops-practice-tools/static-website/coming-soon-static-web/* /var/www/html/

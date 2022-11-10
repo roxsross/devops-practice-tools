@@ -281,13 +281,16 @@ Resources:
     Properties:
       DBName: !Ref 'WordpressDbName'
       AllocatedStorage: "5"                      #5 GB Minimo
-      DBInstanceClass: "db.t3.micro"
+      DBInstanceClass: "db.t2.micro"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: false
       Engine: MySQL
+      EngineVersion: 8.0.19
       MasterUsername:     !Ref 'WordpressDbUser'
       MasterUserPassword: !Ref 'WordpressDbPass'
       DBSubnetGroupName: !Ref DBSubnetGroup
-    DeletionPolicy: Snapshot
-    UpdateReplacePolicy: Snapshot
+      BackupRetentionPeriod: 0
+      DeletionPolicy: Snapshot
       # MultiAZ: true
       Tags:
       - Key: Name
