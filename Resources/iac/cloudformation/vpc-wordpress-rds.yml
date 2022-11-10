@@ -1,0 +1,347 @@
+Description:  This template deploys a VPC, with 
+  A pair of public and private subnets spread across two Availability Zones.
+  It deploys an internet gateway, with a default route on the public subnets. 
+  It deploys an Ec2 with WordPress and EC2 MySQL RDS 
+  It Needs The KeyPairs
+  LONG Version - With    Multi AZ and RR - It deploy in almost 30 min
+  LITE Version - Whitout Multi AZ and RR - It deploy in only    3 min max
+
+Parameters:
+
+  KeyName:
+    Description: We Need an existing EC2 KeyPair to do SSH access to the instances
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Must be an existing EC2 KeyPair.
+    Default: devops
+    
+  MyLabName:
+    Description: Lab Name
+    Type: String
+    Default: Lab_Bootcamp
+
+  MyVPC:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  SubnetPublic1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.0.0/24
+
+  SubnetPublic2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.1.0/24
+
+  SubnetPrivate1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.2.0/24
+
+  SubnetPrivate2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.3.0/24
+
+  BastionSshIpCIDR:
+    Description: Please enter your IP range (CIDR notation) for access to the bastion host by SSH
+    Type: String
+    Default: 0.0.0.0/0
+
+  LatestAmiId:
+    Description: Gets the latest AMI from Systems Manager Parameter store
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+
+  # Wordpress Section
+  WordpressDbName:
+    Description: Wordpress DB Name
+    Type: String
+    Default: wordpress
+
+  WordpressDbUser:
+    Description: Wordpress DB Admin User Name
+    Type: String
+    Default: UserDB
+
+  WordpressDbPass:
+    Description: Wordpress DB Admin User Pass
+    Type: String
+    Default: UserPass
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref MyVPC
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Ref MyLabName
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref MyLabName
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  SubnetPublic1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref SubnetPublic1CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Subnet Public A
+
+  SubnetPublic2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref SubnetPublic2CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Subnet Public B
+
+  SubnetPrivate1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      CidrBlock: !Ref SubnetPrivate1CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Subnet Private A
+
+  SubnetPrivate2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref SubnetPrivate2CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Subnet Private B
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Public RT
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SubnetPublic1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref SubnetPublic1
+
+  SubnetPublic2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref SubnetPublic2
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${MyLabName} Private RT
+
+  SubnetPrivate1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref SubnetPrivate1
+
+  SubnetPrivate2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref SubnetPrivate2
+
+  DBSubnetGroup:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupDescription: 'DB subnet group'
+      SubnetIds:
+      - !Ref SubnetPrivate1
+      - !Ref SubnetPrivate2
+
+  SecurityGroupNoIngress:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "no-ingress-sg"
+      GroupDescription: "Security group with no ingress rule"
+      VpcId: !Ref VPC
+
+  SecurityGroupWebBootcamp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "Web-Bootcamp-SG"
+      GroupDescription: "Web Bootcamp Security Group"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref BastionSshIpCIDR
+
+  SecurityGroupDB:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "DB-SG"
+      GroupDescription: "Database Security Group"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref SecurityGroupWebBootcamp
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref SecurityGroupWebBootcamp
+
+  MyWordpressInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref LatestAmiId
+      KeyName: !Ref KeyName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: SecurityGroupWebBootcamp
+          SubnetId:
+            Ref: SubnetPublic1
+      Tags:
+        - Key: Name
+          Value: My Wordpress Site
+      UserData:
+        'Fn::Base64': 
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y mysql
+            yum install -y httpd
+            yum -y install telnet
+            amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+
+            # Install WordPress
+            cd /var/www/html
+            wget https://wordpress.org/latest.tar.gz 
+            tar -xzf latest.tar.gz
+            sudo cp -r wordpress/*  /var/www/html/
+            chmod -R 755 wp-content
+            chown -R apache:apache wp-content
+            service httpd start
+            chkconfig httpd on
+            
+            # Config WordPress
+            cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+            sed -i 's/database_name_here/${WordpressDbName}/g'  wp-config.php
+            sed -i 's/username_here/${WordpressDbUser}/g'       wp-config.php
+            sed -i 's/password_here/${WordpressDbPass}/g'       wp-config.php
+            sed -i 's/localhost/${MySqlMasterRDS.Endpoint.Address}/g' wp-config.php
+
+  MySqlMasterRDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: !Ref 'WordpressDbName'
+      AllocatedStorage: "5"                      #5 GB Minimo
+      DBInstanceClass: "db.t3.micro"
+      Engine: MySQL
+      MasterUsername:     !Ref 'WordpressDbUser'
+      MasterUserPassword: !Ref 'WordpressDbPass'
+      DBSubnetGroupName: !Ref DBSubnetGroup
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
+      # MultiAZ: true
+      Tags:
+      - Key: Name
+        Value: MySQL RDS
+      VPCSecurityGroups: [ !GetAtt [SecurityGroupDB, GroupId] ]
+
+  # MySqlReadReplicaRDS:
+  #   Type: AWS::RDS::DBInstance
+  #   Properties:
+  #     SourceDBInstanceIdentifier: !Ref 'MySqlMasterRDS'
+  #     DBInstanceClass: "db.t2.small"
+  #     Tags:
+  #     - Key: Name
+  #       Value: MySQL RDS-RR
+
+Outputs:
+  VPC:
+    Description: VPC Created
+    Value: !Ref VPC
+
+  SubnetsPublic:
+    Description: A list of the public subnets
+    Value: !Join [ ",", [ !Ref SubnetPublic1, !Ref SubnetPublic2 ]]
+
+  SubnetsPrivate:
+    Description: A list of the private subnets
+    Value: !Join [ ",", [ !Ref SubnetPrivate1, !Ref SubnetPrivate2 ]]
+
+  SubnetPublic1:
+    Description: Public subnet in the Availability Zone A
+    Value: !Ref SubnetPublic1
+
+  SubnetPublic2:
+    Description: Public subnet in the Availability Zone B
+    Value: !Ref SubnetPublic2
+
+  SubnetPrivate1:
+    Description: Private subnet in the Availability Zone A
+    Value: !Ref SubnetPrivate1
+
+  SubnetPrivate2:
+    Description: Private subnet in the Availability Zone B
+    Value: !Ref SubnetPrivate2
+
+  SecurityGroupNoIngress:
+    Description: Security group with no ingress rule
+    Value: !Ref SecurityGroupNoIngress
+  
+  WordpressWebSites:
+    Description: WordPress Available on
+    Value: !GetAtt MyWordpressInstance.PublicIp
+    Export:
+      Name: !Sub "${AWS::StackName}-WordPress-PublicIp"
+
+  RdsDBEndpoint:
+    Description: RDS DB Enpoint
+    Value: !GetAtt MySqlMasterRDS.Endpoint.Address
