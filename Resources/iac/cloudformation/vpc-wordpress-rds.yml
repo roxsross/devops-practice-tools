@@ -12,12 +12,11 @@ Parameters:
     Description: We Need an existing EC2 KeyPair to do SSH access to the instances
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: Must be an existing EC2 KeyPair.
-    Default: devops
     
   MyLabName:
     Description: Lab Name
     Type: String
-    Default: Lab_Bootcamp
+    Default: Lab
 
   MyVPC:
     Description: Please enter the IP range (CIDR notation) for this VPC
@@ -186,6 +185,8 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable
       SubnetId: !Ref SubnetPrivate2
 
+  # - {'Fn::ImportValue': !Sub '${ParentVPCStack}-SubnetAPrivate'}
+  # - {'Fn::ImportValue': !Sub '${ParentVPCStack}-SubnetBPrivate'}
   DBSubnetGroup:
     Type: 'AWS::RDS::DBSubnetGroup'
     Properties:
@@ -256,7 +257,6 @@ Resources:
             yum update -y
             yum install -y mysql
             yum install -y httpd
-            yum -y install telnet
             amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 
             # Install WordPress
@@ -280,31 +280,27 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: !Ref 'WordpressDbName'
-      AllocatedStorage: "5"                      #5 GB Minimo
+      AllocatedStorage: 5                        #5 GB Minimo
       DBInstanceClass: "db.t2.micro"
-      AllowMajorVersionUpgrade: false
-      AutoMinorVersionUpgrade: false
       Engine: MySQL
-      EngineVersion: 8.0.19
       MasterUsername:     !Ref 'WordpressDbUser'
       MasterUserPassword: !Ref 'WordpressDbPass'
       DBSubnetGroupName: !Ref DBSubnetGroup
-      BackupRetentionPeriod: 0
-      DeletionPolicy: Snapshot
       # MultiAZ: true
       Tags:
       - Key: Name
         Value: MySQL RDS
       VPCSecurityGroups: [ !GetAtt [SecurityGroupDB, GroupId] ]
+    DeletionPolicy: Snapshot
 
-  # MySqlReadReplicaRDS:
-  #   Type: AWS::RDS::DBInstance
-  #   Properties:
-  #     SourceDBInstanceIdentifier: !Ref 'MySqlMasterRDS'
-  #     DBInstanceClass: "db.t2.small"
-  #     Tags:
-  #     - Key: Name
-  #       Value: MySQL RDS-RR
+  MySqlReadReplicaRDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      SourceDBInstanceIdentifier: !Ref 'MySqlMasterRDS'
+      DBInstanceClass: "db.t2.small"
+      Tags:
+      - Key: Name
+        Value: MySQL RDS-RR
 
 Outputs:
   VPC:
