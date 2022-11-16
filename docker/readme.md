@@ -104,10 +104,12 @@ Paso 3: en el Dockerfile
 
 
 ### Crear contenedor mysql
-
+```
 `$docker pull mysql:5.7`
 `$docker run -d -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=12345678" -e "MYSQL_DATABASE=docker-db" -e "MYSQL_USER=docker-user" -e "MYSQL_PASSWORD=88321564" mysql:5.7`
 `$docker logs -f my-db1`
 `mysql -u root -h 127.0.0.1 -p12345678 --port 3306`
 `mysql -u root -h 127.0.0.1 -p12345678`
 `show databases;`
+
+
