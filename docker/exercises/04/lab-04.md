@@ -10,3 +10,5 @@ docker run -d --name myapache -p 5050:80 simple-apache:new
 docker inspect simple-apache:new #En el apartado "Layers" pueden contarse cuántas capas hay
 
 docker history simple-apache:new #Todas las acciones que son < 0B son capas
+
+docker image inspect simple-nginx -f '{{.RootFS.Layers}}'
