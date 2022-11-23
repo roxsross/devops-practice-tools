@@ -113,3 +113,11 @@ Paso 3: en el Dockerfile
 `show databases;`
 
 
+###registry crear repositorio dockerHub
+docker login -u docker-registry_name
+
+docker build -t nombre_imagen:etiqueta recordar espacio . al final para que tome el docker file
+
+docker tag nombre_imagen:etiqueta username_dockerhub/nombre_imagen:etiqueta
+
+docker push username_dockerhub/nombre_imagen:etiqueta
