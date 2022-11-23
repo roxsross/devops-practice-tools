@@ -112,4 +112,15 @@ Paso 3: en el Dockerfile
 `mysql -u root -h 127.0.0.1 -p12345678`
 `show databases;`
 
+###registry 
+docker login -u username_dockerhub
 
+docker build -t nombre_imagen:etiqueta 
+
+docker tag nombre_imagen:etiqueta username_dockerhub/nombre_imagen:etiqueta
+
+docker push username_dockerhub/nombre_imagen:etiqueta
+
+docker logout
+
+docker login -u "myusername" -p "mypassword" docker.io
