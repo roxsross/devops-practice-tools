@@ -1,7 +1,8 @@
 ### Se construye la app
 
-docker build -t app-python:1.0.0 .
-docker build -t app:python:1.0.0 -f
+`docker build -t app-python:1.0.0 . `
+
+`docker build -t app:python:1.0.0 -f `
 
 docker run -d -p 8000:8000 app-python:1.0.0
 
