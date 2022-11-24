@@ -1,14 +1,11 @@
-###como buena practica siempre fijar versiones especificas de la imagen base
 FROM node:alpine3.16
-#Crear diretorio
-WORKDIR /app
-#Copio archivo de gestion de depedencia node
-COPY ./ /app/
-# Descargo dependencia
-RUN npm install 
-# Copiar lo necesario para la aplicacion COPIAR TODO
-    #-COPY . .
-#Expone el puerto 8080 en el contenedor
+
+WORKDIR /opt/app
+
+COPY . .
+
+RUN npm install --only=production
+
 EXPOSE 8080
-#Establece el comando sobre como correra la aplicacion
-CMD ["sh","-c", "date ; npm start"]
+
+CMD [ "npm", "start" ]

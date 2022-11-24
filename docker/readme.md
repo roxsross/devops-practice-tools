@@ -112,12 +112,25 @@ Paso 3: en el Dockerfile
 `mysql -u root -h 127.0.0.1 -p12345678`
 `show databases;`
 
+###registry 
+docker login -u username_dockerhub
 
+<<<<<<< HEAD
 ###registry crear repositorio dockerHub
 docker login -u docker-registry_name
 
 docker build -t nombre_imagen:etiqueta recordar espacio . al final para que tome el docker file
+=======
+docker build -t nombre_imagen:etiqueta 
+>>>>>>> 06403b89465a69e39a93815a3e442e5eeb3e9747
 
 docker tag nombre_imagen:etiqueta username_dockerhub/nombre_imagen:etiqueta
 
 docker push username_dockerhub/nombre_imagen:etiqueta
+<<<<<<< HEAD
+=======
+
+docker logout
+
+docker login -u "myusername" -p "mypassword" docker.io
+>>>>>>> 06403b89465a69e39a93815a3e442e5eeb3e9747
