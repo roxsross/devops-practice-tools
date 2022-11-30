@@ -76,11 +76,11 @@ docker-compose up -d
 ### Entregable
 
 - Dockerfile Frontend y Backend
-- Docker push del Frontend y Backend en DockerHub
-- Entregar las Rutas del registry dockerhub
+- Subir la Imagen del Frontend y Backend al Registry Docker Hub
 - Docker-compose
-- Opcional *script que permita contruir la imagen, tagearla y subirla al registry
-- Documentación
+- Opcional *script que permita construir la imagen, tagear y subirla al registry
+- Opcional * en ec2
+- Documentación y Arquitectura
 
 ## Resultado
 
