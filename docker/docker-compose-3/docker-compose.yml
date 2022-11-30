@@ -1,0 +1,14 @@
+# docker run --name web_nginx -d -v vol_nginx:/usr/share/nginx/html -p 8080:80 nginx
+version: '3'
+services:
+  web:
+    container_name: web_nginx
+    ports:
+      - "8080:80"
+    image: nginx
+    volumes:
+      - "vol_nginx:/usr/share/nginx/html"
+
+volumes:
+  vol_nginx:
+
