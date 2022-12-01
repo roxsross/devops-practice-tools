@@ -1,0 +1,26 @@
+# docker run --name web_nginx -d -v vol_nginx:/usr/share/nginx/html --newtwork net_nginx -p 8080:80 nginx
+version: '3'
+services:
+  back:
+    container_name: backend_python
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - python  
+  
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - python     
+
+networks:
+  python:
+    driver: bridge
+
+### contruccion
+### docker-compose build
+### levantar la imagen
+### docker-compose up ò docker-compose up -d    
