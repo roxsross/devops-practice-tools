@@ -1,6 +1,6 @@
 ## POKEMON DEVOPS CHALLENGE 
 
-La institucion EducacionIT, solicita al Equipo de DevOps Trainer, la contenerizacion de su aplicacion "Pokemon DevOps" en la que incluye:
+La empresa ZERO Technology, solicita al Equipo de DevOps Trainer, la contenerizacion de su aplicacion "Pokemon DevOps" en la que incluye:
 
 - Backend
 - Frontend
