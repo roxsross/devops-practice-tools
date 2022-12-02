@@ -30,6 +30,7 @@ services:
       - poke 
 
   nginx-proxy:
+    container_name: nginx-proxy
     image: jwilder/nginx-proxy
     ports:
       - "80:80"
@@ -39,6 +40,8 @@ services:
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy 
     networks:
       - poke       
 
