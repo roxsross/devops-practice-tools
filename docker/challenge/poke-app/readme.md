@@ -43,7 +43,7 @@ docker build -t frontend_pokemon .
 - Una vez echo esto se crea un contenedor a partir de la imagen construida anteriormente
 
 ```
-docker run -d -p 3000:3000 frontend_pokemon:1.0.0
+docker run -d -p 3000:3000 frontend_pokemon
 ```
 
 - Para acceder podra ir a la ruta http://localhost:3000 y podra ver el sitio web

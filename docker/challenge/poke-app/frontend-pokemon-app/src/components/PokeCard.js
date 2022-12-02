@@ -7,7 +7,7 @@ import swal from 'sweetalert';
 const PokeCard = ({pokemon}) => {
 
   function getAbilitie(e) {
-    let url_deploy_config = process.env.REACT_APP_URL_DEVELOPMENT;
+    let url_deploy_config = process.env.REACT_APP_URL_PRODUCTION;
     const url = url_deploy_config+"/api/v1/names_abilities/"+e
     fetch(url)
     .then(response => response.json())
