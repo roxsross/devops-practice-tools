@@ -9,3 +9,7 @@ Se modifico varios item del Docker-compose, como los puertos puertos en los serv
 ![Captura desde 2022-12-13 03-46-19](https://user-images.githubusercontent.com/110584355/207245833-3aa4467f-4cac-4cb4-94b6-ff95939d38a8.png)
 
 se deje captura del servicio funcionando
+
+usuario git javiergiuga
+
+linkedin: https://www.linkedin.com/in/javier-eduardo-giuga-9b8880106/
