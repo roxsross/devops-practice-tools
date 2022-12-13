@@ -6,6 +6,9 @@ metadata:
     app: nginx
     version: v1
     env: prod
+  annotations:
+    owner: test
+    url: https://google.com
 spec:
   containers:
   - name: nginx-image

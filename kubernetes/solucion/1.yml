@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: k8s-test-web
+  labels:
+    app: test
+spec:
+  containers:
+  - name: test-web-image
+    image: roxsross12/k8s_test_web:latest
