@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multicontainer
+  labels:
+    app: multicontainer
+spec:
+  containers:
+  - name: contenedor1
+    image: nginx:alpine
+  - name: contenedor2
+    image: debian
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do
+          echo "hello";
+          sleep 1;
+        done    
+
