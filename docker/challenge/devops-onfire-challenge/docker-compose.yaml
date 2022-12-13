@@ -1,26 +1,37 @@
 version: "3.9"
 services:
   web:
+    container_name: front
     build: services/frontend
     ports:
-      - "5000:5000"
+      - "3000:3000"
     networks:
-      - frontend
       - backend
+    depends_on:
+      - reader
+      
   reader:
+    container_name: back
     build: services/reader
-    ports:
-      - "8081:8081"
-    networks:
-      - frontend
-  writer:
-    build: services/writer
     ports:
       - "8080:8080"
     networks:
       - backend
-  reids:
-    image: "redis:alpine"
+
+  writer:
+    container_name: python
+    build: services/writer
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - backend
 
 networks:
   backend:
+    driver: bridge
