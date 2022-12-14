@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-test-web
+  labels:
+    app: test
+spec:
+  revisionHistoryLimit: 5 #default 10
+  strategy:
+    type: RollingUpdate #default Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - name: test
+        image: roxsross12/k8s_test_web:v1
+        ports:
+        - name: http
+          containerPort: 80
