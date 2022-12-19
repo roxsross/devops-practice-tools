@@ -1,0 +1,55 @@
+
+
+Instance
+==========
+Amazon Linux t2-medium
+
+Security Group Port
+=================== 
+ssh 22
+http 80
+custom TCP  30000 - 32767
+
+
+1) Install docker
+====================
+https://www.cyberciti.biz/faq/how-to-install-docker-on-amazon-linux-2/
+
+2) Install Kubectl
+===================
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+3) Install Minikube
+=====================
+https://minikube.sigs.k8s.io/docs/start/
+sudo chown -R ec2-user:ec2-user /usr/local/bin/*
+
+ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+minikube start --vm-driver=none
+
+Error 1: X Exiting due to GUEST_MISSING_CONNTRACK: 
+Solution: https://installati.one/centos/7/conntrack-tools/
+
+minikube start --vm-driver=none
+
+Error 2: X Exiting due to RUNTIME_ENABLE: sudo systemctl enable cri-docker.socket: exit status 1
+Solution: https://www.mirantis.com/blog/how-to-install-cri-dockerd-and-migrate-nodes-from-dockershim
+
+minikube start --vm-driver=none
+
+Error 3: X Exiting due to RUNTIME_ENABLE: Temporary Error: sudo crictl version: exit status 1
+Solution: https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
+          cd /usr/local/bin/
+	  sudo chown ec2-user:ec2-user critest
+          sudo chown ec2-user:ec2-user crictl
+	
+	 
+
+	  minikube status
+          minikube stop
+
+
+Example
+========
+https://minikube.sigs.k8s.io/docs/start/
