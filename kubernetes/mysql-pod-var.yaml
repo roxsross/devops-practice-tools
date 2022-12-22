@@ -9,6 +9,9 @@ spec:
   - name: mysql-image
     image: mysql
     imagePullPolicy: Always
+    ports:
+      - name: mysql
+        containerPort: 3306
     env:
     - name: MYSQL_ROOT_PASSWORD
       value: "secret"
