@@ -13,8 +13,8 @@ spec:
       - containerPort: 3306
         name: db
     env:
-    - name: MYSQL_ROOT_PASSWORD
-      valueFrom:
-        configMapKeyRef:
-            name: cm-app
-            value: mysql_var
+      - name: MYSQL_ROOT_PASSWORD
+        valueFrom:
+          configMapKeyRef:
+              name: cm-app
+              value: mysql_var
