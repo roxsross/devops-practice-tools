@@ -1,0 +1,14 @@
+apiVersion: v1 #kubectl api-resources
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql-image
+    image: mysql
+    imagePullPolicy: Always
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "secret"
