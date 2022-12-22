@@ -1,0 +1,70 @@
+version: '3'  
+
+services:  
+  front-poke: 
+    container_name: front-poke-app
+    build: ./frontend-pokemon-app
+    ports:
+      - 3000:3000
+    depends_on:
+      - back-poke
+    environment:
+      - VIRTUAL_HOST=IP_PUBLICA.nip.io
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=IP_PUBLICA.nip.io
+      - LETSENCRYPT_EMAIL=xxx@gmail.com
+    networks:
+      - poke  
+
+  back-poke:
+    container_name: back-poke-app
+    build: ./backend-pokemon-app
+    ports:
+      - 8000:8000
+    environment:
+      - VIRTUAL_HOST=api.IP_PUBLICA.nip.io
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=api.IP_PUBLICA.nip.io
+      - LETSENCRYPT_EMAIL=xxx@gmail.com  
+    networks:
+      - poke 
+
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: 
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy 
+    networks:
+      - poke       
+
+  nginx-letsencrypt:
+    container_name: nginx-proxy-letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - poke    
+
+volumes:
+  html:
+  certs:
+  vhost:
+
+networks:
+  poke:
+    driver: bridge
