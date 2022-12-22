@@ -36,7 +36,7 @@ Nos solicitan una vez más una intervención como DevOps. El problema parece ser
 
 Como dato adicional nos informan que el frontend del monolito expone el contenido en el **puerto 80 por http**.
 
-#### Parte 4
+#### Parte 4 *intentar
 
 El equipo de desarrollo comenzó el proceso de desacoplamiento de la solución, con lo cual quieren tener un ambiente bajo de pruebas en Kubernetes para validar que el backend funciona como esperan.
 
