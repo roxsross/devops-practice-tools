@@ -16,5 +16,5 @@ spec:
     - name: MYSQL_ROOT_PASSWORD
       valueFrom:
         configMapKeyRef:
-          - name: cm-app
+            name: cm-app
             value: MYSQL_ROOT
