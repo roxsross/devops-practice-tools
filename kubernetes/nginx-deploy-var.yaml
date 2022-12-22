@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deployment-nginx
-  #namespace: testing
   labels:
     app: nginx
 spec:
@@ -24,3 +23,8 @@ spec:
         ports:
         - name: http
           containerPort: 80
+        env:
+        - name: PRUEBA
+          value: "12345"
+        - name: CURSO 
+          value: "Bootcamp"   
