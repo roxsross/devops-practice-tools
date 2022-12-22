@@ -1,0 +1,753 @@
+-- KUBERNETES --
+
+Minikube: es una herramienta que nos permite crear un cluster local, simula un entorno de Kubernetes.
+
+start: arranca un cluster de Kubernetes de manera local.
+    minikube start
+
+status: para ver el estado de nuestro cluster.
+    minikube status
+
+Virtual Box: por defecto minikube usa docker como generador de maquina virtual, si queremos usar virtual box ejecutamos el siguiente comando.
+    minikube start --driver=virtualbox
+
+dashboard: para abrir un dashboard en un navegador web donde podemos ver y monitorar nuestro cluster de Kubernetes.
+    minikube dashboard
+
+logs: permite ver los logs del cluster.
+    minikube logs
+
+ip: permite ver la configuracion y la IP que se asigno al servidor del cluster.
+    minikube ip
+
+ssh: podemos loguearnos dentro de la maquina virtual que hemos creado con minikube.
+    minikube ssh
+
+update-check: permite comprobar si hay una version mas nueva de minikube.
+    minikube update-check
+
+kubectl: herramienta basica para Kubernete, similar al comando docker que nos permite ejecutar instruciones en docker.
+
+cluster-info: muestra informacion del cluster.
+    kubectl cluster-info
+
+get: permite visualizar los elementos, servicios y demas componentes del cluster.
+    kubectl get (algun servicio o elemento)
+    kubectl get nodes
+    kubectl get pods
+    kubectl get deployment
+    kubectl get services/svc
+
+-o wide: brinda mayor informacion de los pods, deploy, servicios y nodos.
+    kubectl get pods -o wide
+
+describe: secribe un determinado servicio o pods, similar al inspect de docker.
+    kubectl describe pods (describe todos los pods)
+    kubectl describe pod/(nombre-pod)
+    kubectl describe deployments (describe todos los deployments)
+    kubectl describe deploy (nombre-deploy)
+
+run: se usa para hacer un deployment/despliegue, funciona igual que el run de docker, pero cambia las demas sintaxis.
+    kubectl run nombre-del-contenedor --image=nombre-de-la-imagen
+    kubectl run n1 --image=nginx
+
+create: crea un deployment, un deployment es un conjunto de instrucciones para que un contenedor pueda funcionar en un pod
+    kubectl create deployment (nombre-deployment) --image=(nombre-de-la-imagen)
+    kubectl create deployment hello-world --image=nginx
+    kubectl delete -n default deployment nginx-deployment (comando sacado del dashboard)
+
+logs: muestra lo que esta haciendo o ejecutando dentro del pod
+    kubectl logs pod/(nombre-pod)
+    kubectl logs pod/n1
+
+proxy: nos permite acceder desde el exterior al interior de la red que usan los pods o contenedores.
+    kubectl proxy
+    - Luego entrando al navegador mediante la dirccion del localhost con el puerto 8001 veremos las apis necesarias para acceder a los componentes del cluster.
+    - Por ej, para entrar al contenedor de nginx mediante el navegador: http://localhost:8001/api/v1/namespaces/default/pods/n1/proxy/
+
+exec: ejecuta comando dentro del contenedor, como en docker.
+    kubectl exec nombre-pod (comando a ejectuar)
+    kubectl exec n1 bash/ls
+
+expose: es la manera mas sencilla de crear un servicio (crea un servicio para exponer un deployment).
+    kubectl expose (nombre del servicio) --type="NodePort" --port 80 (hay varios tipos de "type")
+    kubectl expose deployments/nginx1 --type="NodePort" --port 80
+
+El archivo de configuracion de kubectl se encuentra dentro de la carpeta oculta .kube, el archivo config.
+
+El archivo de configuracion de minikube se encuentra dentro de la carpeta ocula .minikube, el archivo config.
+
+El o los cluster creados por minikube lo podemos ver dentro del directorio oculto .minikube/machines
+
+--container-runtime=cri-o: arrancar una maquina virtual con otro tipo de conteiner runtime.
+    minikube start --container-runtime=crio-o
+
+-p: crear otro cluster con otro perfil(-p de perfil)
+    minikube start -p (nombre del perfil)
+    minikube start -p desarrollo
+
+profile: permite ver en que cluster estamos.
+    minikube profile
+
+profile list: nos da una lista de los cluster que tenemos.
+    minikube profile list
+
+- Con profile nos podemos mover entre los distintos cluster que tengamos.
+    minikube profile (nombre del cluster)
+
+    -- PODS --
+
+Es el objeto minimo que podemos encontrar en Kubernetes.
+Normalmente un POD contiene un contenedor, un pod tiene un  conjunto de recursos propios, como ser, RAM, procesador, direcciones de red, puertos, hostname, 
+volumenes, incluso una direccion de red unica, estos pods se crean en un cluster, el pod se comunica con los demas pods por una net virtual privada dentro de Kubernetes.
+no se deben guardar nada dentro de los pods.
+
+1. IMPERATIVO: despliega una aplicación en un POD, un POD es como una burbuja donde dentro de el se ejecutan uno o varios contenedores.
+
+2. DELARATIVO: se hace atra vez de archivos MANIFEST(YAML)
+
+run: crear un pod de manera automatica que se cree y se ejecute en ese momento y con el que podamos interactuar.
+    kubectl run nginx1 --image=nginx
+
+describe (componente/type): se ejecuta el comando describe seuido de algun pods/services/deployments.
+    kubectl describe pod/n1
+
+exec: permite ejecutar un comando contra un contenedor, igual que el exce de docker.
+    kubectl exec nombre-pod comando-a-introducir
+    kubectl exec n1 ls
+    kubectl exec n1 -it bash
+
+--port= : para exponer el puerto de un contenedor/pod.
+    kubectl run apache --image=httpd --port=8080
+
+logs: para ver los logs de un pod.
+    kubectl logs (nombre-pod)
+    kubectl logs apache
+    - con el parametro -f se queda esperando el log.
+    kubectl logs -f apache
+    - con el parametro --tail= le podemos indicar el numero de lineas que queremos ver de los logs.
+    kubectl logs apache --tail=30
+    - en el caso de tener mas de un contenedor corriendo en un mismo pod tengo que decirle a kubectl cual de los dos quiero con me muestro, con el parametro -c
+    kubectl logs pod/nombre-del-pod -c (nombre-del-contenedor)
+    kubectl logs pod/redis-django -c almacen --> tenemos dos contenedores, uno llamdo "almacen", y el otro "frontal"
+     
+ -- FICHERO YAML --
+
+# Las cadenas no requieren comillas:
+Titulo: Introcuccion a TAML
+# Pero se pueden usar:
+title-w-quotes: 'Intruccion a TAML' -> properties:'valor'
+
+# Las cadenas multilineas comienzan con |
+ejecutar: |
+    npm cr
+    npm build
+    prueba npm
+
+# Secuencias
+# Las secuencias nos permiten definir listas en YAML:
+# Una lista de números usando guiones:
+números:
+    - uno
+    - dos 
+    - Tres
+
+# La version en linea:
+numeros: [uno, dos, tres]
+
+# Valores anidados
+# Podemos usar todos los tipos anteriores para crear un objeto con valores anidados, asi:
+# Mil novecientos ochenta y cuatro datos nuevos.
+1984:
+    autor:  Cosme Fulanito
+    publicado en: 1949-06-08
+    recuento de paginas: 328
+    descripcion: |
+        Una novela, a menudo publicada como 1984, es una novela distopica del novelista ingles Cosme Fulanito.
+        Fue publicado en Junio de 1949 por Secker & Warburg como noveno y ultimo b de Orwell.
+
+# Lista de objetos
+# Combinando secuencias y valores anidados podemos crear una lista de objetos.
+# Hagamos una lista de libros:
+- 1984:
+    autor: Coste Fulanito
+    publicado en: 1949-06-08
+    recuento de paginas: 328
+    descripcion: |
+        Una novela, a menudo publicada como 1984, es una novela distopica del novelista ingles Cosme Fulanito.
+
+- el Hobbit:
+    autor: J. R. R. Tolkien
+    publicado en: 1937-09-21
+    recuento de paginas: 310
+    descripcion: |
+        The Hobbit, o There and back Again es una novela de fantasía para niños del autor ingles J. R. R. Tolkien
+
+-----------------------------------------
+
+create: nos permite crear un recurso o un componente de Kubernetes a partir de un fichero YAML, se le pasa el parametro -f.
+    kubectl create -f (nombre-fichero-.yaml)
+    kubectl create -f nginx.yaml
+
+delete: nos permite borrar un pod del cluster.
+    kubectl delete pod/(nombre-del-pod) -> tambien se puede usarl sin la barra "/"
+    kubectl delete pod (nombre-del-pod)
+    kubectl delete pod/n1
+    kubectl delete -n default pod nginx-deployment-66b6c48dd5-wfzbm (comando sacado del dashboard) 
+    --grace-period= : se le puede dar un tiempo de "gracias" antes de borrar.
+    kubectl delete pod apache --grace-period=(tiempo-en-segundos)
+    kubectl delete pod apache --grace-period=10
+    -now: borra el pod de manera inmediata y que no espere nada.
+    kubectl delete pod apache --now
+    --all: borra todos los pod (no pregunta si queremos hacerlo)
+    kubectl delete pods --all
+
+get pod (YAML o JSON): permite obtener informacion de un determinado pod ya sea en formato yaml o json.
+    kubectl get pod/(nombre-del-pod) -o (YAML/JSON)
+    kubectl get pod/n1 -o yaml
+
+apply: uno de los comandos con lo que podemos trabajar de manera declarativa. usamos este comando en vez del create, comprueba que es lo que ya tenemos, si el objeto
+    no existe lo creao, si ya existe ve que diferencias hay y las aplica, por ej, esto sirve si queremos agreagar alguna etiqueta o algo mas al objeto ya creado.
+    kubectl apply -f nginx.yaml
+
+Existe varias forma de tratar un pod cuando se cae o algo anda mal, tenemos tras posibilidades, Always, OnFailure, Never.
+    Always: le indicamos que se reinicie siempre (opcion predefinida).
+    OnFailure: se reinicie solo si ha fallado.
+    Never: que nunca se reinicie.
+    se indica con la clausula: "restarPolicy: Always/OnFailure/Never" --> a nivel del contenedor(containers) dentro de las especificaciones(spec)
+
+--show-labels: muestra informacion de los pods junto con sus respectivas etiquetas.
+    kubectl get pod tomcat --show-labels
+    kubectl get pods -o wide --show-labels
+    -con el parametro -L le indicamos que nos creé una nueva columna cone sa etiqueta.
+    kubectl get pod tomcat --show-labels -L (nombre-columna) --> podemos concatenar varios nombres de columnas.
+    kubectl get pod tomcat --show-labels -L estado
+
+label: podemos manejar o actualizar nuestros objetos para poder añadir o modificar las etiquetas.
+    kubectl label pod nombre-pod etiqueta-objeto=nombre-objeto
+    kubectl laber pod tomcat responsable=Juan
+
+--overwrite: nos permite sobreescribir el laber/etiqueta de une stado.
+    kubectl label --overwrite pod nombre-pod etiqueta-objeto=nombre-objeto
+    kubectl label --overwrite od tomcat estado=test (antes era estado=desarrollo)
+
+Para borrar una etiqueta no existe un comando DELETE como tal, entonces lo podemos hacer de la siguiente manera.
+    kubectl label pod/tomcat responsable- (agregamos un "-" en el laber que queremos borrar)
+
+-- SELECTORES --
+
+Son el objeto primario con el que se relacionan algunos de los componentes, como los deployment, servicios, etc.
+Con como los "where" que se utilizan con una determianda condicion para encontrar determinados objetos con una determinada etiqueta.
+
+-l/--selector: nos permite aplicar un selector en nuestro cluster, en este caso vamos a buscar los labels con un determinado estado.
+    kubectl get pods --show-labels -l estado=desarrollo
+    -Podemos poner condiciones, por ej   
+    kubectl get pods --show-labels -l estado=desarrollo, responsable=Juan
+    -Podemos ir por la negacion con el caracter "!" (responsable!=Juan)
+    kubectl get pods --show-labels -l estado=desarrollo, responsable!=Juan
+    -Se puede aplicar condiciones en forma de conjuntos con otros operadores, por ejemplo el "in" 'estado in(desarrollo)'
+    kubectl get pods --show-labels -l 'estado in (desarrollo)'
+    -Tambien se le pueden poner mas de un estado en fomra de listas, por ejemplo estado in(desarrollo,testind)'
+    -Podemos usar los selectores para borrar un conjunto de PODS, por ejemplo.
+    kubectl delete pods -l 'estado=desarrollo
+
+-- ANOTACIONES --
+
+Son similares a los labels, pero son mas bien descriptivas (al mismo nivel que label y name dentro de metadata).
+    metadata:
+        name: tomcat1
+        labels:
+            estado: "desarrollo"
+            responsable: "Juan"
+        annotations:
+            doc: "se debe compliar con gcc"
+            adjunto: "ejmplo de anotacion"
+podemos ver o buscar luego con un describe, tambien podemos usar un jsonpath, por ej.
+    kubectl get pod tomcat1 -o jsonpath={.metadata.annotations}
+
+
+-- DEPLOYMENTS --
+
+Despliega uno o un conjunto de PODS.
+
+create: crea un deployment.
+    kubectl create deployment nombre --image=nombre-de-imagen
+    kubectl create deployment apache --image=httpd
+
+get deployment: muestra los deployment del cluster.
+    kubectl get deployment
+
+get rs(replica set): muestra las replicas sets.
+    kubectl get rs
+
+describe: muestra informacion del deployment.
+    kubectl describe tipo-objeto nombre-deployment
+    kubectl describe deploy apache
+
+-o yaml/json: presenta la informacion en cualquiera de esos dos formatos.
+    kubectl get deploy apache -o yaml/json
+
+    -- ESTRUCTURA DE UN DEPLOY .YAML --
+    apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+    kind: Deployment
+    metadata:
+    name: nginx-d
+    spec:
+    selector: #permite seleccionar un conjunto de objetos que cumplan las condiciones.
+        matchLabels:
+        app: nginx
+    replica: 2 #inidca al controlador que ejecute 2 pods.
+    template: # planilla que define a los containers.
+        metadata:
+        labels:
+            app: nginx
+        spec:
+        containers:
+        - name: nginx
+            image: nginx:1.7.9
+            ports:
+            - containerPort: 80
+
+edit: nos permite editar un deploy sin necesitad del fichero yaml.
+    kubectl edit deploy nginx-d 
+
+scale: nos permite escalar un deploy de manera manual
+    kubectl scale deploy nombre-del-deploy --replicas=(numero-de-deploy)
+    kubectl scale deploy nginx-d --replicas=2
+
+Para poder asignar recursos como memoria a un Pod, debemos hacer en la seccion de los contenedores.
+    spec:
+       containers:
+       - name: nginx
+         image: nginx
+         ports:
+         - containerPort: 80
+         resources:
+            limits: --> Indica el consumo maximo de memoria.
+              memory: "200Mi"
+            requests: --> Indica la memoria inicial con la que arrancaría el contenedor.
+              memory: "100M"
+
+Lo mismo aplica para la CPU.
+            resources:
+            limits: --> Indica el consumo maximo de memoria.
+              memory: "200Mi"
+              cpu: "2"
+            requests: --> Indica la memoria inicial con la que arrancaría el contenedor.
+              memory: "100M"
+              cpu: "0.5"
+ 
+ -- SERVICIOS --
+
+Contamos con varios tipos de servicios.
+ 1. ClusterIP: Accesible solo desde dentro del Cluster (IP, NOMBRE, PUERTO)
+ 2. NodePort: Accesible desde fuera del Cluster (IP, NOMBRE, PUERTO, NODEPORT)
+ 3. LoadBalancer: Similar al NodePort, accesible desde fuera del Cluster. Integrado con LoadBalancer de terceros, como ser AWS, GOOGLE CLOUD, AZURE.
+
+svc: comando para ver los servicios disponibles.
+    kubectl get svc
+    -tambien podemos usar el siguiente comando.
+    kubectl describe svc web-svc
+
+expose: comando que crea un servicio para exponer un deploy del cluster al exterior.
+    kubectl expose deployment nombre-deploy --name=nombre-del-servicio --target-port=puerto-por-donde-ecucha-el-contenedor --type=tipo-puerto-externo
+    kubectl expose deployment web-d --name=web-svc --target-port=80 --type=NodePort
+
+ip: nos indica la ip del cluster minikube.
+    minikube ip
+
+-ESTRUCTURA YAML-
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: web-svc
+    labels:
+        app: web
+    spec:
+    type: NodePort -> tipo de servicio
+    ports:
+    - port: 80 -> Puerto de los contenedores
+        targetPort: 80 -> Puerto por donde se supone que estan escuchando los contenedores.
+        nodePort: 30001 -> Puerto por el cual accederemos a nuestras aplicaciones junto con la IP del cluster.
+        protocol: TCP
+    selector:
+        app: web --> indica o relaciona los pods y deploys con este servicio que se esta creando.
+
+strategy: tenemos 2 tipos de estrategia, RollingUpdate(mas común) y el Recreate, Ambos van dentro de spec, a nivel del "selector" o "replicas" en el archivo YAML.
+    RollingUpdate: va modificando los pods de manera evolutiva(creando poco a poco) para que asi tengamos pods que vayan dando servicios, los pods
+    se van sustituyendo con las nuevas veriones.
+    Recreate: directamente borra todos los pods y luego se carga por la nueva version, de esta manera nos quedamos sin servicio hasta que la nueva version este UP.
+        strategy:
+            type: RollingUpdate/Recreate
+
+rollout history: nos muestra el historial del rollout(despliegues) que tiene un determinado deploy.
+    kubectl rollout history deploy nombre-deploy
+    kubectl rollout history deploy nginx-d 
+    -podemos ver el detalle de cada revicion, con el parametro --revision=(numero-de-revision)
+    kubectl rollout history deploy nginx-d --revision=1 
+
+status: nos inidca el estado el rollout.
+    kubectl rollout status deploy nombre-del-deploy
+    kubectl rollout status deploy nginx-d 
+
+rollout undo: volvemos atras en un rollout determinado.
+    kubectl rollout undo deploy nombre-del-deploy --to-revision=numero-revision
+    kubectl rollout undo deploy nginx-d --to-revision=2
+
+env: variables de entorno, van dedentro de las spec como propiedades de los containers.
+
+  template
+    spec:
+      containers:
+      - name: slave
+        image: gcr.io/google_samples/gb-redisslave:v3
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+
+
+-- NAMESPACE --
+
+Es la division logica del cluster de Kubernete para poder dividir los objetos en distintas zonas, serían como particiones virtuales del cluster.
+Minikube crea el namespace default como predeterminado.
+
+get: permite ver los namespaces del cluster.
+    kubectl get namespace nombre-namespace
+
+De manera predeterminada minikube nos muestra informacion(pods/deploy,etc) del namespace "default", para que nos muestre informacion de un determinado namespace
+debemos indicarle con el parametro -n
+    kubectl get pods -n nombre-namespace
+    kubectl get pods -n kube-system
+    kubectl get deploy -n dev1
+
+describe: describe un namespace
+    kubectl describe namespace default
+
+create: crea un nuevo namespace.
+    kubectl create namespace nombre-namespace
+    kubectl create namespace testing
+
+delete: permite borrar un namespace.
+    kubectl delete namespace nombre-namespace
+    kubectl delete namespace dev1
+
+--namespace: para agregar objetos a un determinado namespace usamos en parametro --namespace, si no indicno ningun names por defecto lo va a crear en "default".
+    kubectl apply -f archivo.yaml --namespace=nombre-namespace
+    kubectl apply -f deploy_elastic.yaml --namespace=dev1
+
+Para configurar un determinado namespace como por defecto dentro del cluster debemos configurar el archivo de configuracion de minikube, dentro de la carpeta 
+home/.kube (carpeta oculta) encontramos un archivo "config", el cual debemos configurar el atributo "namespace: minikube" dentro del contexto de minikube.
+Esta misma informacion lo podemos ver con el comando "config view".
+    kubectl config view
+Para setear el namespace por defecto podemos usar el siguiente comando.
+    kubectl config set-context --current --namespace=nombre-namespace
+    kubectl confif set-context --current --namespace=dev1
+
+token create: el token para agregar un nodo worker al cluster duran 24hs, con el siguiente comando podemos volver a generar otro token.
+    kubeadmin token create --print-join-command
+
+
+    -- VOLUMENES --
+Crear espacio en disco para que la informacion de los contenedores se guarde de manera persistente.
+
+Kubernetes almancena la informacion de manera persistente en volumenes, existe varios tipos de volumenes.
+PV: PERSISTENT VOLUME(volumen persistente), es la definicion de una zona de almacenamiento, es como crear un disco logico de un determinado espacio fijo, puede ser variable tambien.
+PVC: PERSISTENT VOLUME CLAIM(reclamacion a un volumen persistente): un determinado objeto "reclama" espacio a un PV(volumen persistente).
+SC: STORAGE CLASS(clase de almacenamiento): es como el nexodo que une los PVC a los PV.
+
+Existen varios Tipos de volumenes:
+GCEPersistentDisk
+AWSElasticBlockStore
+AzureFile
+AzureDisk
+CSI
+FC (Fibre Channel)
+FlexVolume
+Flocker
+NFS
+iSCSI
+RBD (Ceph Block Device)
+CephFS
+Cinder (OpenStack block storage)
+Glusterfs
+VsphereVolume
+Quobyte Volumes
+HostPath (Single node testing only – local storage is not supported in any way and WILL
+NOT WORK in a multi-node cluster)
+Portworx Volumes
+ScaleIO Volume
+
+Kubernetes cuenta con con tres tipos de ACCESOS a los PERSISTENT VOLUME, que depende del backend que vamos a utilizar.
+1. ReadWriteOnce: read-write(lectura y escritura), solo para un nodo (RWO)
+2. ReadOnlyMany: read-only(solo lectura), para muchos nodos (ROX)
+3. ReadWriteMany: read-write(lectura y escritura), para muchos nodos (RWX)
+
+Tipos de reciclaje PERSISTENT VOLUME, es decir, que hace Kubernetes cuando terminamos de trabajar con un determinado volumen.
+Las politicas de reciclaje de columentes tambien depende del backend y son:
+1. Retain: Reclamación manual (disponibles para que otros pods los puedan reclamar)
+2. Recycle: Reutilizar contenido
+3. Delete: Borrar contenido
+
+--Estrucutra YAML de un POD para configurar un volumen --
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts: #Indicamos que directorios se van a crear/montar dentro del contenedor.
+      - mountPath: /home #Creamos un directorio "/home" en el contenedor
+        name: home #Indicamos el nombre del directorio creado con el cual haremos referencia al directorio mountPath
+      - mountPath: /git
+        name: git
+        readOnly: true #Indicamos que el directorio "/git" será de "solo lectura".
+      - mountPath: /temp
+        name: temp 
+  volumes: #Mapeamos los volumenes de los contenedores creados anteriormente a espacios en disco del host.
+    - name: home
+      hostPath: #Asociamos a un determinado fichero dentro de nuestro disco del host.
+        path: /home/Kubernetes/ejercicios/volumenes/volumen-pod
+    - name: git
+      gitRepo: #Etiqueta que nos permite conectar con un repositorio en la nube, se clona el directorio de la nube en nuestro volumen del host/contenedor.
+        repository: https://github.com/maojeda21/k8s
+    - name: temp
+      emptyDir: #Directorio temporal, una vez que el contenedor deja de existir, tambien lo hará el volumen.
+        {}
+
+
+--Estrucutra YAML de un PV(Volumen Persistente)--
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: sistemaficheros #Nombre que le damos para que los demas PV-CLAIM puedan tomar espacio de éste PV.
+  capacity:
+    storage: 50Gi #Espacio a asignar al PV
+  accessModes:
+    - ReadWriteOnce #Indica que a este PV puede ser leido/accedido de a un nodo a la vez.
+  hostPath: #Indica el directorio de la PC/VM HOST
+    path: "/mnt/data"
+
+get pv: muestra informacion de los PV(Volumenes Persistentes) que tenemos en el cluster.
+    kubectl get pv 
+
+
+--Estrucutra YAML de un PVC(Volumen Persistente Reclamados)--
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-claim
+spec:
+  storageClassName: sistemaficheros #Nombre del PV del cual tomamos el espacio en disco del HOST.
+  accessModes:
+    - ReadWriteOnce #Debe coincidir con el modo de de acceso del PV.
+  resources:
+    requests:
+      storage: 5Gi #Espacio que este objeto "reclama" al PV.
+
+get pvc: muestra informacion de los PVC(Volumenes Persistentes Reclamados) que tenemos en el cluster.
+    kubectl get pvc
+
+
+--Estrucutra YAML de un pod para reclamar un PVC--
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pv-pod
+spec:
+  volumes:
+    - name: pv-storage
+      persistentVolumeClaim: #Asociamos el volumen del POD a un PVC
+        claimName: pv-claim #El POD se asocia con el PVC de nombre pv-claim -> archivo:"pvclaim.yaml"
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts: #Directorio dentro del contenedor.
+        - mountPath: "/usr/share/nginx/html" #path: dentro del contenedor 
+          name: pv-storage #Indicamos el volumen al que estará asociado el path del contenedor.
+
+NFS-Network File System(sistema de archivos de red): Es utilizado para sistemas de archivos distribuido en un entorno de red de computadoras de área local. 
+Posibilita que distintos sistemas conectados a una misma red accedan a ficheros remotos como si se tratara de locales.
+
+Debemos instalar y configurar NFS tanto en el master como en los nodos worker.
+En el master como root.
+    apt install nfs-kernel-server
+Luego creamos el directorio que vamos a compartir entro los nodos.
+    mkdir -p /var/datos
+Editamos el archivo exports, sitaudo en /etc/exports donde declaramos el directorio que vamos a exportar.
+    nano /etc/exports
+Agregamos la siguiente linea al final del archivo.
+    #/var/shared 192.0.0.0/24(rw,sync,no_root_squash,no_all_squash) -> La red 192.0.0.0/24 es la red interna donde se encuentra el master y los nodos del cluster.
+    /var/datos (ip o subred de la red local)(permisos)
+    /var/datos 192.168.1.15(rw,sync,no_root_squash,no_all_squash)
+Reiniciamos el servicio NFS.
+    systemctl restart nfs-kernel-server.service
+para comprobar el directorio exportado usamos el siguiente comando.
+    showmount -e 127.0.0.1
+        Export list for 127.0.0.1:
+        /var/datos 192.0.0.0/24
+
+En los nodos woker instalamos el cliente NFS como root.
+    apt isntall nfs-common
+Comprobamos el directorio exportado en el master.
+    showmount -e 192.168.174.4
+        Export list for 192.168.174.4:
+        /var/datos 192.0.0.0/24
+Creamos el directorio en el nodo worker que vamos a mapear al nodo master.
+    mkdir /var/datos
+Montamos o mapeamos con el siguiente comando.
+    mount -t nfs (IP-MASTER):directorio-master directorio-worker
+    mount -t nfs 192.168.1.15:/var/datos /var/datos
+
+
+
+-- Storage Dinamico --
+Se denomina dinamico dado brinda la posbilidad de elegir el tipo de proveedor del storage(awz,google,local), luego se define una clase sobre ese tipo de almacenamiento
+y todos los volumenes formaran parte de ese proveedor de storage.
+
+----- Estrucutra YAML -------
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+    annotations:
+        description: #Esto es un ejemplo de Storage Class
+    name: bbdd
+    provisioner: kubernetes.io/no-provisioner #Aca definimos el proveedor del storage, no-provisioner=LOCAL
+    reclaimPolicy: Delete
+    volumeBindingMode: WaitForFirstConsumer #Depende del tipo de proveedor, WFFC:indica que no se va a relacionar ningun PVC a un PV hasta que no tengamos al menos un POD up
+
+-Asignamos un PV al Storages Class(bbdd).
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+    name: pv-bbdd-vol1
+    spec:
+    storageClassName: bbdd #Debe coincidir con el StorageClass creado en el archivo bbdd
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/tmp/bbdd-vol1" #Path del host.
+
+-Ahora creamos otro PV que asociaremos al mismos StorageClass(bbdd)
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+    name: pv-bbdd-vol2        #Tiene otro nombre que el primer archivo.
+    spec:
+    storageClassName: bbdd    #Debe coincidir con el StorageClass creado en el archivo bbdd
+    capacity:
+        storage: 2Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/tmp/bbdd-vol2"  #Path del host
+
+-Creamos un PVC para reclamar un PV.
+-Al tener 2 PV disponibles, el primer creiterio a tomar es el espacio a reclamar, toma el PV que mejor se ajuste al PVC que esta reclamando.
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+    name: pvc-bbdd
+    spec:
+    storageClassName: bbdd #Le indico el nombre del StorageClass del cual va a tomar la clase de almacenamiento.
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+        storage: 2Gi
+
+
+-- VARIABLES --
+Podemos añadir variables de entorno mediante la etiquega "env" al mismo nivel que la variable "name" dentro de la etiqueta padre "containers".
+   containers: 
+   -name: nginx
+    env:
+    - name: nombre_variable   #clave
+      value: valor_variable   #valor
+
+
+-- CONFIGMAPS --
+Archivos de configuracion que nos permite agregar conjunto de propiedades del tipo calve:valor de una manera mas sencillas.
+
+Froma imperativa: 
+    kubectl create configmap nombre-configmap --from-literal=variable=valor --from-literal=variable=valor .....
+    kubectl create configmap cg1 --from-literal=usuario=usu --from-literal=password=pass
+
+Froma decalrativa:
+Creamos un fichero con los datos de las variables y sus respectivos valores
+
+el archivo "datos_mysql.properties" contiene los sigueintes datos
+MYSQL_ROOT_PASSWORD=kubernetes
+MYSQL_USER=usudb
+MYSQL_PASSWORD=usupass
+MYSQL_DATABASE=kubernetes
+
+Podemos agreagar una variable de entorno mediante el siguiente archivo pod1.yaml, en este caso estamos agragando una variable, con un solo valor.
+    apiVersion: v1
+    kind: Pod
+    metadata:
+    name: pod1
+    spec:
+    containers:
+        - name: test-container
+        image: gcr.io/google-samples/node-hello:1.0
+        env:
+            # Define the environment variable
+            - name: DATOS_MYSQL   #Nombre de la variable.
+            valueFrom:            #Su valor viene de.
+                configMapKeyRef: 
+                name: datos-mysql           #Nombre del configmap
+                key: datos_mysql.properties #Clave del configmap
+    restartPolicy: Never
+
+-Primero creamos un configmap con la configuracion de las variables de entorno, para eso ejecutamos el siguiente comando.
+    kubectl create configmap nombre-archivo.properties --from-env-file nombre-del-fichero
+    kubectl create configmap datos-mysql-env --form-env-file datos_mysql.properties.
+-Luego, ejecutamos el siguiente comando para ver los configmap que tenemos.
+    kubectl get cm
+Una vez que tenemos los configmap necesario creamos el pod para poder cargar el archivo configmap con la configuracion del entorno.
+    apiVersion: v1
+    kind: Pod
+    metadata:
+    name: pod1
+    spec:
+    containers:
+        - name: test-container
+        image: gcr.io/google-samples/node-hello:1.0
+        envFrom:  #Cargar un entorno desde un fichero configmap.
+        - configMapRef:
+            name: datos-mysql-env #Nombre del archivo de configuracion.
+    restartPolicy: Never
+
+-Creamos un archivo de configmap de manera declarativa mediante el siguiente archivo yaml.
+    apiVersion: v1
+    data:
+    MYSQL_DATABASE: kubernetes
+    MYSQL_PASSWORD: usupass
+    MYSQL_ROOT_PASSWORD: kubernetes
+    MYSQL_USER: usudb
+    kind: ConfigMap
+    metadata:
+    name: datos-mysql-env
+    namespace: default
+
+Creamos el deploy/pod y cargamos el configmap dentro la etiqueta envFrom.
+    envFrom:  #Cargar un entorno desde un fichero configmap.
+    - configMapRef:
+      name: datos-mysql-env #Nombre del archivo de configuracion.
+
+
+-- SECRETS --
+Es como un configmap pero protegido, se usan cuando tenemos datos especialmente delicados, o no queremos que se vean.
+
+La manera mas sencilla de crear un secrets es muy parecido a un configmap, pero con parametros diferentes.
+    kubectl create secret generic nombre-secret --from-literal=pass-root=contraseña --from-literal=pass-usu=contraseña
+    kubectl create secret generic passwords --from-literal=pass-root=devuser --from-literal=pass-usu=kubernetes
+Para ver los secrets ejecutamos el siguiente comando.
+    kubectl get secrets
