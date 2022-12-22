@@ -7,7 +7,8 @@ spec:
     - name: demo
       image: mysql
       env:
-        - name: MYSQL_ROOT_PASSWORD   
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom: 
             configMapKeyRef:
               name: bd-demo          
               key: data_root
