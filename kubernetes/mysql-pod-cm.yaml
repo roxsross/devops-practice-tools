@@ -17,4 +17,4 @@ spec:
       valueFrom:
         configMapKeyRef:
             name: cm-app
-            value: MYSQL_ROOT
+            value: mysql_var

@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: cm-app
 data:
-  MYSQL_ROOT: "secret"
+  mysql_var: "secret"
