@@ -12,3 +12,5 @@ spec:
     env:
     - name: PRUEBA
       value: "12345"
+    - name: CURSO 
+      value: "Bootcamp"
