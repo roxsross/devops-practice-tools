@@ -13,5 +13,11 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom: 
             configMapKeyRef:
-              name: bd-demo          
-              key: data_root
+              name: bd-demo   #nombre del recurso CM campo metadata name       
+              key: data_root  #
+
+        - name: MYSQL_USER
+          valueFrom: 
+            configMapKeyRef:
+              name: bd-demo2   #nombre del recurso CM campo metadata name       
+              key: data_root2  #

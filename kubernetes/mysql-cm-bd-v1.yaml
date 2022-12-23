@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: bd-demo2
+  name: bd-demo
 data:
 
-  data_root2: "secret"
+  data_root: "secret"
