@@ -1,12 +1,14 @@
-#
-#Create new deployment. name: 'worker'
-#image: 'kodekloud/examplevotingapp_worker'
+
+
+# Create new deployment. name: 'worker'
+# image: 'kodekloud/examplevotingapp_worker'
+# status: 'Running'
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: worker
-  namespace: vote
+  namespace: vote  
 spec:
   selector:
     matchLabels:
@@ -17,5 +19,5 @@ spec:
         app: worker
     spec:
       containers:
-      - name: worker
-        image: kodekloud/examplevotingapp_worker
+        - image: 'kodekloud/examplevotingapp_worker'
+          name: worker
