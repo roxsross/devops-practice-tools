@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb
+data:
+
+  root_password: "secret"
+  mysql_usuario: "admin"
+  mysql_password: "secret1234"
+  basededatos: "test"
