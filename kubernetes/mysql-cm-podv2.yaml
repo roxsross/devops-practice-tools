@@ -6,6 +6,9 @@ spec:
   containers:
     - name: demo
       image: mysql
+      ports:
+        - containerPort: 3306
+          name: db
       env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom: 
