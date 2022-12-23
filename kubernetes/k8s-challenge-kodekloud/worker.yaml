@@ -1,0 +1,21 @@
+#
+#Create new deployment. name: 'worker'
+#image: 'kodekloud/examplevotingapp_worker'
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: vote
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: kodekloud/examplevotingapp_worker

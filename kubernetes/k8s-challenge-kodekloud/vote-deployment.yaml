@@ -1,0 +1,21 @@
+#
+#Create a deployment: name = 'vote-deployment'
+#image = 'kodekloud/examplevotingapp_vote:before'
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-deployment
+  namespace: vote
+spec:
+  selector:
+    matchLabels:
+      app: vote-deploy
+  template:
+    metadata:
+      labels:
+        app: vote-deploy
+    spec:
+      containers:
+      - name: vote-deploy
+        image: kodekloud/examplevotingapp_vote:before

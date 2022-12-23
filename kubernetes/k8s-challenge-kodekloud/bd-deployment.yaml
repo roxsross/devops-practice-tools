@@ -1,0 +1,36 @@
+#
+#Create a deployment: name = 'vote-deployment'
+#image = 'kodekloud/examplevotingapp_result:before'
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+  namespace: vote
+spec:
+  selector:
+    matchLabels:
+      app: db-deployment
+  template:
+    metadata:
+      labels:
+        app: db-deployment
+    spec:
+      containers:
+        - name: db-deployment
+          image: postgres:9.4
+          ports:
+            - containerPort: 5432
+              name: db
+              protocol: TCP
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: "trust"
+            - name: POSTGRES_PASSWORD
+              value: "test"     
+      volumes:
+        - name: db-data
+          emptyDir: {}
