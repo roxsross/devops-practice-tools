@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-poke-deploy
+  labels:
+    app: back-poke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-poke
+  template:
+    metadata:
+      labels:
+        app: back-poke
+    spec:
+      containers:
+      - name: back-poke-image
+        image: roxsross12/back-poke:1.0.0
+        ports:
+        - containerPort: 8000
+          name: back-port

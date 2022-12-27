@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-poke-deploy
+  labels:
+    app: front-poke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-poke
+  template:
+    metadata:
+      labels:
+        app: front-poke
+    spec:
+      containers:
+      - name: front-poke-image
+        image: roxsross12/front-poke:1.0.0
+        ports:
+        - containerPort: 3000
+        env:
+          - name: REACT_APP_URL_PRODUCTION
+            value: "https://7c7eab3b-f309-428b-b502-e0393b9c1ccd-10-244-6-25-30312.saci.r.killercoda.com"  
