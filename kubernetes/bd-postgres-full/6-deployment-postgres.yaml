@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgress-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgress
+        image: postgres
+        ports:
+        - containerPort: 5432
+        envFrom:
+          - secretRef:
+              name: postgres-secret
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgredb
+          - mountPath: /docker-entrypoint-initdb.d
+            name: init-script
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-clain
+        - name: init-script
+          configMap:
+            name: postgress-init-script-configmap

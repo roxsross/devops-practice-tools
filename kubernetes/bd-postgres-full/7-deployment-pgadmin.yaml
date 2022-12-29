@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+      - name: pgadmin4
+        image: dpage/pgadmin4
+        envFrom:
+          - secretRef:
+              name: pgadmin-secret
+        ports:
+        - containerPort: 80
+          name: pgadminport
