@@ -1,0 +1,81 @@
+# PersistentVolume - Name: redis01
+# Access modes: ReadWriteOnce
+# Size: 1Gi
+# hostPath: /redis01, directory should be created on worker node
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis01
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis01"
+
+--- 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis02
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis02"
+
+--- 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis03
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis03"
+
+--- 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis04
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis04"
+
+--- 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis05
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis05"
+
+--- 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis06
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/redis06"
