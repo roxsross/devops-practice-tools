@@ -1,0 +1,37 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: test-cluster
+  region: us-east-1
+  version: "1.23"
+
+iam:
+  withOIDC: true
+
+addons:
+- name: vpc-cni 
+  attachPolicyARNs:
+    - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+- name: coredns
+  version: latest 
+- name: kube-proxy
+  version: latest
+- name: aws-ebs-csi-driver
+  version: latest  
+
+managedNodeGroups:
+- name: bootcampNodes
+  minSize: 1
+  maxSize: 2
+  volumeSize: 30
+  instanceType: t3.medium
+  amiFamily: AmazonLinux2
+  labels: { role: workers }
+  tags:
+    nodegroup-role: worker
+
+cloudWatch:
+ clusterLogging:
+   enableTypes: ["*"]

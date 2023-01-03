@@ -1,0 +1,15 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: fargate-cluster
+  region: us-east-1
+
+fargateProfiles:
+  - name: fargate-bootcamp
+    selectors:
+      - namespace: workshop
+      - namespace: devops
+      - namespace: default
+      - namespace: kube-system
