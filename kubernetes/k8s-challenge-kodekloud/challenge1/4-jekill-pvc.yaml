@@ -4,7 +4,7 @@ metadata:
   name: jekyll-site
   namespace: development
 spec:
-  storageClassName: manual
+  storageClassName: local-storage
   resources:
     requests:
       storage: 1Gi
