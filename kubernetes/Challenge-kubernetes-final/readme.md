@@ -14,7 +14,6 @@ La Diagrama de la solución se muestra a continuación con todos los objetos de 
 
 ![Diagrama](kubernetes.png)
 
-![Diagrama](bootcamp-devops-kubernetes.png)
 
 > Nos piden entonces modelar la aplicación para poder ejecutarla dentro de Kubernetes.
 
