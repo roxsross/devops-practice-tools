@@ -91,7 +91,7 @@ pod/pacman-deployment-58d9756957-64mb   1/1     Running   0          15m
 pod/pacman-deployment-b4774f546-dj9gc   1/1     Running   0          67s
 
 NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/pacman-deployment   2/2     1            1           67s
+deployment.apps/pacman-deployment   2/2     2            2           67s
 
 NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 service/kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP        13d
