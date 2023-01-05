@@ -115,7 +115,7 @@ metadata:
   name: grupo1
 ```
 
-### Aplicación Pacman
+### Aplicación Pacman
 
 - 1
 ```
