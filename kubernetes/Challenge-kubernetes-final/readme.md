@@ -18,6 +18,9 @@ Consideraciones:
 - Ubicar la aplicación en un _namespace_ particular, sabiendo que eventualmente surgirán muchas otras aplicaciones
 - Cumplir con los atributos de calidad que esperamos para una aplicación de esta índole: alta disponibilidad, elasticidad, tolerancia a fallos.
 
+Especificaciones Infraestructura:
+- Mientras realizan el challenge pueden usar minikube ó killercoda "sin desplegar el ingress"
+- En la Evaluacion se conectaran en un cluster AWS EKS para realizar el despliegue de la aplicación.
 
 Especificaciones Tecnicas:
 
