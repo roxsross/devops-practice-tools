@@ -42,11 +42,15 @@ MONGODB_DATABASE:pacman
 MY_MONGO_PORT:"27017"
 MONGO_USE_SSL:"false"
 MONGO_VALIDATE_SSL:"false"
-MY_NODE_NAME
+
+```
+env adicional
+```
+        - name: MY_NODE_NAME
           valueFrom:
             fieldRef:
               apiVersion: v1
-              fieldPath: spec.nodeName      
+              fieldPath: spec.nodeName           
 
 ```
 - 2 
