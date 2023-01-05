@@ -8,7 +8,11 @@ En esta tarea vamos a desplegar una aplicación que requiere de dos servicios pa
 
 - Recuerden apuntar siempre a las buenas practicas
 
-La Diagrama de la solución se muestra a continuación:
+La Diagrama de la solución se muestra a continuación con todos los objetos de k8s:
+
+### Arquitecturas
+
+![Diagrama](kubernetes.png)
 
 ![Diagrama](bootcamp-devops-kubernetes.png)
 
@@ -23,7 +27,7 @@ La Diagrama de la solución se muestra a continuación:
 ### Especificaciones de Infraestructura:
 - Mientras realizan el challenge pueden usar minikube ó killercoda 
 - Tomar las siguientes consideraciones si trabajan de forma temporal con minikube ó killercoda 
-  1- Crear una pv: especifica el el hostpath el grupoX que corresponden y ademas etiqueta app:grupoX
+  - Crear una pv: especifica el el hostpath el grupoX que corresponden y ademas etiqueta app:grupoX
 ```
 apiVersion: v1
 kind: PersistentVolume
@@ -40,13 +44,13 @@ spec:
   hostPath:
     path: "/mnt/grupo1/"
   ```
-  1- recuerda en el pvc agregar el mismo storageClassName: local-storage que la pv y el labels
+> recuerda en el pvc agregar el mismo storageClassName: local-storage que la pv y el labels que corrsponda
 
 - En la Evaluacion se conectaran en un cluster AWS EKS para realizar el despliegue de la aplicación.
 
 - En la Evaluación estará creado los PersistentVolume (PV) y separado por los grupoX:
 
-pueden validar: `kubectl get pv -n grupox`
+Pueden validar: `kubectl get pv`
 
 ```
 kind: PersistentVolume
@@ -103,6 +107,13 @@ Ejemplo:
 
 ```
 kubectl create ns grupo1
+```
+- o pueden crear un fichero del ns
+```
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grupo1
 ```
 
 ### Aplicación Pacman
@@ -212,7 +223,7 @@ Size: 1Gi
 ```
 - 3 SECRET "Recuerden convertir en base64"
 ```
-Secret - Name: mongodb-users-secret
+Secret - Name: mongodb-secret
 type: Opaque 
 data:
   MONGO_INITDB_ROOT_USERNAME: root
@@ -225,7 +236,7 @@ stringData:
 
 - 4 Configmap
 ```
-ConfigMap - Name: mongo-init-script-configmap
+ConfigMap - Name: mongo-init-cm
 data:
   mongo-init.sh: |
     echo "Creating curator user..."
@@ -271,7 +282,7 @@ args: ["--auth"]
             claimName: mongo-storage
         - name: init-script
           configMap:
-             name: mongo-init-script-configmap
+             name: mongo-init-cm
              items:
               - key: mongo-init.sh
                 path: mongo-init.sh     
@@ -305,11 +316,11 @@ NAME                                  CAPACITY   ACCESS MODES   RECLAIM POLICY  
 persistentvolume/mongo-grupo1-volume   5Gi        RWX            Retain           Bound    default/mongo-storage                           3m36s
 
 NAME                          TYPE     DATA   AGE
-secret/mongodb-users-secret   Opaque   5      3m36s
+secret/mongodb-secret         Opaque   5      3m36s
 
 NAME                                    DATA   AGE
 configmap/kube-root-ca.crt              1      13d
-configmap/mongo-init-script-configmap   1      3m36s
+configmap/mongo-init-cm                 1      3m36s
 
 ```
 ### verificar estado de la base de datos
@@ -361,6 +372,9 @@ switched to db pacman
 }
 > 
 ```
+
+![Diagrama](app.png)
+
 
 ### Resumen de objetos
 
