@@ -280,6 +280,20 @@ switched to db pacman
 > 
 ```
 
+### Resumen de objetos
+
+- Aplicacion Pacman
+        - Deployment
+        - Service
+        - Ingress
+- Base de Datos Mongo
+        - ConfigMap
+        - Secret
+        - PersistentVolume
+        - PersistentVolumeClaim
+        - Deployment
+        - Service
+
 ## Entrega y Devolución
 
 Con respecto a la entrega, de ahora en más el formato de entrega será subir los manifiestos YAML en su versión final en el repositorio de cada estudiante. 
