@@ -120,7 +120,7 @@ metadata:
 - 1
 ```
 Create a deployment: name = 'pacman-deployment'
-image = 'roxsross12/pacman:1.0.0'
+image = 'roxsross12/pacman:1.0.1'
 containerPort: 8080
 replicas: 2
         env:
@@ -295,7 +295,7 @@ targetPort = '27017'
 type: ClusterIP
 ```
 
-### Resultado
+### Resultado Despliegue
 ```
 controlplane $ k get pod,deploy,svc,pvc,pv,secret,cm
 NAME                         READY   STATUS    RESTARTS   AGE
@@ -372,9 +372,6 @@ switched to db pacman
 > 
 ```
 
-![Diagrama](app.png)
-
-
 ### Resumen de objetos
 
 - Aplicacion Pacman
@@ -388,6 +385,35 @@ switched to db pacman
         - PersistentVolumeClaim
         - Deployment
         - Service
+
+
+### Resultados 
+- Vista al Usuario final
+![Diagrama](app.png)
+
+- Si el usuario pierde debe guardar su nombre para el score
+![Diagrama](1.png)
+
+> recomiendo estar atentos a los logs de la app para ver si realmente esta insertando los datos
+
+- Se Inserta en la BD por metodo POST
+![Diagrama](3.png)
+
+- Historico de usuarios y score
+
+![Diagrama](4.png)
+
+- Revisen la BD Mongo si realmente creo las colecciones 
+
+![Diagrama](5.png)
+
+
+Muchos Exitos TEAM
+
+¡queremos entender tu forma de pensar! 
+
+> Busca los logros donde no hay límites by @roxsross
+
 
 ## Entrega y Devolución
 
