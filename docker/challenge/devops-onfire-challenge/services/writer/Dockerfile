@@ -1,6 +1,6 @@
 FROM python:3.9
 WORKDIR /app
-ADD . /app
+COPY . /app
+RUN pip install -r requirements.txt
 EXPOSE 8081
-CMD ["python"]
-ENTRYPOINT ["main.py"]
+CMD [ "python", "main.py" ]
